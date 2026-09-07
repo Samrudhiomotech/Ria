@@ -1,11 +1,10 @@
 streamlit
 pandas
 numpy
-plotly
+plotly==5.18.0
 scikit-learn
 joblib
-tensorflow
+tensorflow==2.15.0
 shap
-keras
+keras==2.15.0
 dill
-plotly==5.18.0
