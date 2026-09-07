@@ -4,7 +4,7 @@ numpy
 plotly==5.18.0
 scikit-learn
 joblib
-tensorflow==2.15.0
+tensorflow==2.16.1
+keras==3.0.5
 shap
-keras==2.15.0
 dill
