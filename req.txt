@@ -8,3 +8,4 @@ tensorflow
 shap
 keras
 dill
+plotly==5.18.0
