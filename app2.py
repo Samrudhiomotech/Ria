@@ -13,10 +13,23 @@ except ImportError:
     SKLEARN_AVAILABLE = False
 
 try:
+    import tensorflow as tf
     from tensorflow import keras
     TF_AVAILABLE = True
 except ImportError:
     TF_AVAILABLE = False
+
+
+# Keras compatibility layer for models saved with a newer Keras serializer.
+# Some saved Dense-layer configs contain quantization_config=None, which older
+# Dense deserializers reject even though it has no effect on inference.
+if TF_AVAILABLE:
+    class CompatibleDense(keras.layers.Dense):
+        @classmethod
+        def from_config(cls, config):
+            config = config.copy()
+            config.pop("quantization_config", None)
+            return super().from_config(config)
 
 
 # ==================================================================================
@@ -807,7 +820,11 @@ def load_model():
     if not os.path.exists(PATHS["model"]):
         return None, f"Model file not found at {PATHS['model']}"
     try:
-        model = keras.models.load_model(PATHS["model"])
+        model = keras.models.load_model(
+            PATHS["model"],
+            compile=False,
+            custom_objects={"Dense": CompatibleDense},
+        )
         return model, None
     except Exception as e:
         return None, str(e)
